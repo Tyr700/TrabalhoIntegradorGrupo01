@@ -22,5 +22,4 @@ app.get("/piscar", (req, res) => {
         const led = new Led(13);
         led.blink(500);
     });
-
 });
