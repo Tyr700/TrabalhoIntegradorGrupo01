@@ -18,8 +18,9 @@ app.get("/piscar", (req, res) => {
     board.on("ready", () => {
         console.log("Placa conectada!");
 
-        // Define o LED no pino 13
+
         const led = new Led(13);
         led.blink(500);
     });
+    res.status(200);
 });
