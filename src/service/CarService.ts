@@ -10,15 +10,13 @@ export class CarService {
   public CreateCar(car: {
     model: string;
     plate: string;
-    arrivalTime: Date;
     departureTime: Date;
     name: string;
     contact: string;
   }): Car {
-    const c = new Car(
+    const c = Car.create(
       car.model,
       car.plate,
-      car.arrivalTime,
       car.departureTime,
       car.name,
       car.contact

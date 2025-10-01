@@ -1,12 +1,25 @@
 export class Car {
   constructor(
+    private id: string,
     private model: string,
     private plate: string,
-    private arrivalTime: Date,
     private departureTime: Date,
     private name: string,
-    private contact: string
+    private contact: string,
+    private createdAt: Date
   ) {}
+
+  static create(
+    model: string,
+    plate: string,
+    departureTime: Date,
+    name: string,
+    contact: string
+  ) {
+    const id = crypto.randomUUID();
+    const createdAT = new Date();
+    return new Car(id, model, plate, departureTime, name, contact, createdAT);
+  }
 
   public getModel(): string {
     return this.model;
@@ -14,8 +27,8 @@ export class Car {
   public getPlate(): string {
     return this.plate;
   }
-  public getArrivalTime(): Date {
-    return this.arrivalTime;
+  public getcreatedAt(): Date {
+    return this.createdAt;
   }
   public getDepartureTime(): Date {
     return this.departureTime;
