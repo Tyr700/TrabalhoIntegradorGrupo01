@@ -1,20 +1,9 @@
 import express from "express";
+import { CarController } from "./controller/CarController";
 
 export const app = express();
+const PORTA = 3000;
 
-app.listen(3000, () => {
+app.listen(PORTA, () => {
   console.log("ta rodabdo");
-});
-
-import { Board, Led } from "johnny-five";
-const board = new Board();
-
-app.get("/piscar", (req, res) => {
-  board.on("ready", () => {
-    console.log("Placa conectada!");
-
-    const led = new Led(13);
-    led.blink(500);
-  });
-  res.status(200);
 });

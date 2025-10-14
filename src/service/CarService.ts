@@ -24,7 +24,43 @@ export class CarService {
     this.listaC.push(c);
     return c;
   }
+
   public getCar() {
     return this.listaC;
+  }
+
+  public Calculate(createdAT: Date, departureTime: Date) {
+    const diffMs = departureTime.getTime() - createdAT.getTime();
+    if (diffMs <= 0) {
+      throw new Error("A data de saída deve ser posterior à data de entrada.");
+    }
+    const horas = diffMs / (1000 * 60 * 60);
+    const horasCobradas = Math.ceil(horas);
+    if (horasCobradas <= 1) {
+      return 10; // valor mínimo
+    }
+    const valorTotal = 10 + (horasCobradas - 1) * 2;
+    return valorTotal;
+  }
+
+  public RemoveCar(plate: string) {
+    const fomatedPlate = plate.toUpperCase();
+    const index = this.listaC.findIndex(
+      (car) => car.getPlate() === fomatedPlate
+    );
+
+    if (index === -1) {
+      console.log(`Carro com placa ${fomatedPlate} não encontrado.`);
+      return;
+    }
+
+    const car = this.listaC[index];
+    const departureTime = new Date();
+
+    // Reutilizando a função de cálculo
+    const value = this.Calculate(car.getcreatedAt(), departureTime);
+
+    // Remover do array
+    this.listaC.splice(index, 1);
   }
 }
