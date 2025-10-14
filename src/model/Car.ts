@@ -21,6 +21,10 @@ export class Car {
     return new Car(id, model, plate, departureTime, name, contact, createdAT);
   }
 
+  public getId(): string {
+    return this.id;
+  }
+
   public getModel(): string {
     return this.model;
   }

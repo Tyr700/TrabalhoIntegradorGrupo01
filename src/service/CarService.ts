@@ -2,9 +2,11 @@ import { Car } from "../model/Car";
 
 export class CarService {
   private listaC: Car[] = [];
+  private HistC: Car[] = [];
 
-  constructor(public dataU: Car[]) {
+  constructor(public dataU: Car[], public dataH: Car[]) {
     this.listaC = dataU;
+    this.HistC = dataH;
   }
 
   public CreateCar(car: {
@@ -62,5 +64,6 @@ export class CarService {
 
     // Remover do array
     this.listaC.splice(index, 1);
+    this.HistC.push(car);
   }
 }

@@ -4,7 +4,8 @@ import { app } from "../server";
 
 export function CarController() {
   const data: Car[] = [];
-  const carService = new CarService(data);
+  const dataHistory: Car[] = [];
+  const carService = new CarService(data, dataHistory);
 
   app.post("/cadastro", (req, res) => {
     try {
@@ -19,7 +20,7 @@ export function CarController() {
   app.get("/verCarro", (req, res) => {
     try {
       const Cars = carService.getCar();
-      res.status(200);
+      res.status(200).json(Cars);
     } catch (error: any) {
       res.status(400);
     }
