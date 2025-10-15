@@ -4,10 +4,7 @@ export class CarService {
   private listaC: Car[] = [];
   private HistC: Car[] = [];
 
-  constructor(public dataU: Car[], public dataH: Car[]) {
-    this.listaC = dataU;
-    this.HistC = dataH;
-  }
+  constructor() {}
 
   public CreateCar(car: {
     model: string;
@@ -22,6 +19,9 @@ export class CarService {
 
   public getCar() {
     return this.listaC;
+  }
+  public getHist() {
+    return this.HistC;
   }
 
   public Calculate(createdAT: Date, departureTime: Date) {
@@ -52,12 +52,12 @@ export class CarService {
     const car = this.listaC[index];
     const departureTime = new Date();
 
-    // Reutilizando a função de cálculo
-    const value = this.Calculate(car.getcreatedAt(), departureTime);
+    car.setPrice(this.Calculate(car.getcreatedAt(), departureTime));
+    const value = car.getPrice();
 
     // Remover do array
-    this.listaC.splice(index, 1);
     this.HistC.push(car);
+    this.listaC.splice(index, 1);
     return value;
   }
 }

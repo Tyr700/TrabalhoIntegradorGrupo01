@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 export class Car {
   constructor(
     private id: string,
@@ -5,13 +6,15 @@ export class Car {
     private plate: string,
     private name: string,
     private contact: string,
-    private createdAt: Date
+    private createdAt: Date,
+    private price: Number
   ) {}
 
   static create(model: string, plate: string, name: string, contact: string) {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     const createdAT = new Date();
-    return new Car(id, model, plate, name, contact, createdAT);
+    const price = 0;
+    return new Car(id, model, plate, name, contact, createdAT, price);
   }
 
   public getId(): string {
@@ -33,5 +36,11 @@ export class Car {
   }
   public getContact(): string {
     return this.contact;
+  }
+  public getPrice(): Number {
+    return this.price;
+  }
+  public setPrice(price: Number) {
+    this.price = price;
   }
 }
