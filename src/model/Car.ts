@@ -7,6 +7,7 @@ export class Car {
     private name: string,
     private contact: string,
     private createdAt: Date,
+    private departureTime: Date | undefined,
     private price: Number
   ) {}
 
@@ -14,7 +15,23 @@ export class Car {
     const id = randomUUID();
     const createdAT = new Date();
     const price = 0;
-    return new Car(id, model, plate, name, contact, createdAT, price);
+    const departureTime = undefined;
+    return new Car(
+      id,
+      model,
+      plate,
+      name,
+      contact,
+      createdAT,
+      departureTime,
+      price
+    );
+  }
+  public getDepartureTime(): Date | undefined {
+    return this.departureTime;
+  }
+  public setDepartureTime(departureTime: Date | undefined) {
+    this.departureTime = departureTime;
   }
 
   public getId(): string {

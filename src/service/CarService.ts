@@ -24,7 +24,10 @@ export class CarService {
     return this.HistC;
   }
 
-  public Calculate(createdAT: Date, departureTime: Date) {
+  public Calculate(createdAT: Date, departureTime: Date | undefined) {
+    if (!departureTime) {
+      throw new Error("Data de saída é obrigatória.");
+    }
     const diffMs = departureTime.getTime() - createdAT.getTime();
     if (diffMs <= 0) {
       throw new Error("A data de saída deve ser posterior à data de entrada.");
@@ -50,9 +53,9 @@ export class CarService {
     }
 
     const car = this.listaC[index];
-    const departureTime = new Date();
+    car.setDepartureTime(new Date());
 
-    car.setPrice(this.Calculate(car.getcreatedAt(), departureTime));
+    car.setPrice(this.Calculate(car.getcreatedAt(), car.getDepartureTime()));
     const value = car.getPrice();
 
     // Remover do array
