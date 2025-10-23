@@ -1,9 +1,11 @@
 import { CarService } from "../service/CarService";
 import { Car } from "../model/Car";
 import { app } from "../server";
+import { ArduinoService } from "../service/ArduinoService";
 
 export function CarController() {
   const carService = new CarService();
+  let arduinoService: ArduinoService | null = null;
 
   app.post("/cadastro", (req, res) => {
     try {
@@ -85,6 +87,58 @@ export function CarController() {
         message: "Carro removido com sucesso",
         value: value,
       });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Rotas do Arduino
+  app.post("/arduino/conectar", async (req, res) => {
+    try {
+      const { porta } = req.body;
+      arduinoService = new ArduinoService(carService, porta || "COM3");
+      await arduinoService.initialize();
+      res.status(200).json({
+        message: "Arduino conectado com sucesso",
+        porta: porta || "COM3",
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/arduino/abrir-cancela", async (req, res) => {
+    try {
+      if (!arduinoService) {
+        return res.status(400).json({ error: "Arduino não conectado" });
+      }
+      await arduinoService.getArduino().openBarrier();
+      res.status(200).json({ message: "Cancela aberta" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/arduino/fechar-cancela", async (req, res) => {
+    try {
+      if (!arduinoService) {
+        return res.status(400).json({ error: "Arduino não conectado" });
+      }
+      await arduinoService.getArduino().closeBarrier();
+      res.status(200).json({ message: "Cancela fechada" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/arduino/desconectar", (req, res) => {
+    try {
+      if (!arduinoService) {
+        return res.status(400).json({ error: "Arduino não conectado" });
+      }
+      arduinoService.disconnect();
+      arduinoService = null;
+      res.status(200).json({ message: "Arduino desconectado" });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

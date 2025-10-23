@@ -12,6 +12,9 @@ export class CarService {
     name: string;
     contact: string;
   }): Car {
+    if (this.listaC.length >= 3) {
+      throw new Error("Ja tem 3 carros no estacionamento");
+    }
     const c = Car.create(car.model, car.plate, car.name, car.contact);
     this.listaC.push(c);
     return c;
