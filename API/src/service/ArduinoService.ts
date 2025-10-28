@@ -14,9 +14,12 @@ export class ArduinoService {
     try {
       await this.arduino.connect();
 
-      // Configurar callback quando carro for detectado
       this.arduino.onCarDetected(() => {
         this.handleCarDetection();
+      });
+
+      this.arduino.onSpotChanged((spotId: number, occupied: boolean) => {
+        this.handleSpotChange(spotId, occupied);
       });
 
       console.log("🤖 Arduino Service inicializado!");
@@ -57,6 +60,11 @@ export class ArduinoService {
 
   public getArduino(): ArduinoSerial {
     return this.arduino;
+  }
+
+  private handleSpotChange(spotId: number, occupied: boolean): void {
+    console.log(`🅿️ Vaga ${spotId} agora está ${occupied ? 'ocupada' : 'livre'}`);
+    this.carService.updateSpotStatus(spotId, occupied);
   }
 
   public disconnect(): void {

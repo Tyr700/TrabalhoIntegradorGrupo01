@@ -3,34 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, MapPin } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  removido: boolean;
-}
+import { api, ParkingSpot } from "@/services/api";
 
 const Maquete = () => {
   const navigate = useNavigate();
-  const [occupiedSpots, setOccupiedSpots] = useState(0);
+  const [spots, setSpots] = useState<ParkingSpot[]>([]);
   const totalSpots = 3;
 
   useEffect(() => {
-    const updateOccupancy = () => {
-      const vehicles: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-      const activeVehicles = vehicles.filter(v => !v.removido).length;
-      setOccupiedSpots(activeVehicles);
+    const updateSpots = async () => {
+      try {
+        const spotsData = await api.getSpots();
+        setSpots(spotsData);
+      } catch (error) {
+        console.error("Erro ao carregar vagas:", error);
+      }
     };
 
-    updateOccupancy();
-    window.addEventListener("storage", updateOccupancy);
-    return () => window.removeEventListener("storage", updateOccupancy);
+    updateSpots();
+    const interval = setInterval(updateSpots, 2000);
+    return () => clearInterval(interval);
   }, []);
 
-  const spots = [
-    { id: "S5", occupied: occupiedSpots >= 1 },
-    { id: "S4", occupied: occupiedSpots >= 2 },
-    { id: "S3", occupied: occupiedSpots >= 3 },
-  ];
+  const occupiedCount = spots.filter(s => s.occupied).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/30 p-4">
@@ -56,7 +51,7 @@ const Maquete = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Vagas Ocupadas</p>
-                  <p className="text-3xl font-bold text-primary">{occupiedSpots}/{totalSpots}</p>
+                  <p className="text-3xl font-bold text-primary">{occupiedCount}/{totalSpots}</p>
                 </div>
                 <div className="flex gap-4">
                   <div className="flex items-center gap-2">
@@ -84,7 +79,7 @@ const Maquete = () => {
                         <div className={`w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-xl transition-all duration-500 ${
                           spot.occupied ? "bg-primary scale-110" : "bg-muted-foreground/30"
                         }`}>
-                          {spot.id}
+                          V{spot.id}
                         </div>
                       </div>
                       <div className="flex gap-2 mt-4">

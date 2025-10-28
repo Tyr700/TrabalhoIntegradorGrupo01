@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { api } from "@/services/api";
 
 interface Vehicle {
   id: string;
@@ -29,7 +30,7 @@ const Cadastro = () => {
     telefone: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.modelo || !formData.marca || !formData.placa || !formData.motorista || !formData.telefone) {
@@ -37,38 +38,33 @@ const Cadastro = () => {
       return;
     }
 
-    const vehicles: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-    
-    const vehicleExists = vehicles.some(v => v.placa.toUpperCase() === formData.placa.toUpperCase());
-    if (vehicleExists) {
-      toast.error("Veículo com esta placa já está cadastrado");
-      return;
+    try {
+      await api.registerCar(formData);
+
+      setShowAnimation(true);
+      toast.success("Veículo cadastrado com sucesso!");
+
+      await api.openBarrier();
+      toast.success("Cancela aberta!");
+
+      setTimeout(async () => {
+        await api.closeBarrier();
+        toast.info("Cancela fechada");
+      }, 5000);
+
+      setTimeout(() => {
+        setFormData({
+          modelo: "",
+          marca: "",
+          placa: "",
+          motorista: "",
+          telefone: "",
+        });
+        setShowAnimation(false);
+      }, 1500);
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao cadastrar veículo");
     }
-
-    const newVehicle: Vehicle = {
-      id: Date.now().toString(),
-      ...formData,
-      placa: formData.placa.toUpperCase(),
-      dataEntrada: new Date().toLocaleString("pt-BR"),
-      removido: false,
-    };
-
-    vehicles.push(newVehicle);
-    localStorage.setItem("vehicles", JSON.stringify(vehicles));
-
-    setShowAnimation(true);
-    toast.success("Veículo cadastrado com sucesso!");
-
-    setTimeout(() => {
-      setFormData({
-        modelo: "",
-        marca: "",
-        placa: "",
-        motorista: "",
-        telefone: "",
-      });
-      setShowAnimation(false);
-    }, 1500);
   };
 
   return (

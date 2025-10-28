@@ -5,6 +5,7 @@ export class ArduinoSerial {
   private port: SerialPort | null = null;
   private parser: ReadlineParser | null = null;
   private onCarDetectedCallback: (() => void) | null = null;
+  private onSpotChangedCallback: ((spotId: number, occupied: boolean) => void) | null = null;
 
   constructor(private portPath: string = "COM3", private baudRate: number = 9600) {}
 
@@ -27,16 +28,56 @@ export class ArduinoSerial {
         reject(err);
       });
 
-      // Escutar mensagens do Arduino
       this.parser.on("data", (data: string) => {
         const message = data.trim();
         console.log("Arduino disse:", message);
 
-        // Quando o sensor detectar um carro
         if (message === "CARRO_DETECTADO") {
           console.log("🚗 Carro detectado pelo sensor!");
           if (this.onCarDetectedCallback) {
             this.onCarDetectedCallback();
+          }
+        }
+
+        if (message === "VAGA_1_OCUPADA") {
+          console.log("🅿️ Vaga 1 ocupada");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(1, true);
+          }
+        }
+
+        if (message === "VAGA_1_LIVRE") {
+          console.log("🅿️ Vaga 1 livre");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(1, false);
+          }
+        }
+
+        if (message === "VAGA_2_OCUPADA") {
+          console.log("🅿️ Vaga 2 ocupada");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(2, true);
+          }
+        }
+
+        if (message === "VAGA_2_LIVRE") {
+          console.log("🅿️ Vaga 2 livre");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(2, false);
+          }
+        }
+
+        if (message === "VAGA_3_OCUPADA") {
+          console.log("🅿️ Vaga 3 ocupada");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(3, true);
+          }
+        }
+
+        if (message === "VAGA_3_LIVRE") {
+          console.log("🅿️ Vaga 3 livre");
+          if (this.onSpotChangedCallback) {
+            this.onSpotChangedCallback(3, false);
           }
         }
       });
@@ -45,6 +86,10 @@ export class ArduinoSerial {
 
   public onCarDetected(callback: () => void): void {
     this.onCarDetectedCallback = callback;
+  }
+
+  public onSpotChanged(callback: (spotId: number, occupied: boolean) => void): void {
+    this.onSpotChangedCallback = callback;
   }
 
   public sendCommand(command: string): Promise<void> {
@@ -70,6 +115,14 @@ export class ArduinoSerial {
 
   public async closeBarrier(): Promise<void> {
     await this.sendCommand("FECHAR_CANCELA");
+  }
+
+  public async openExitBarrier(): Promise<void> {
+    await this.sendCommand("ABRIR_SAIDA");
+  }
+
+  public async closeExitBarrier(): Promise<void> {
+    await this.sendCommand("FECHAR_SAIDA");
   }
 
   public disconnect(): void {

@@ -3,31 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Car } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  modelo: string;
-  marca: string;
-  placa: string;
-  motorista: string;
-  telefone: string;
-  dataEntrada: string;
-  removido: boolean;
-}
+import { api, Car as ApiCar } from "@/services/api";
 
 const Vagas = () => {
   const navigate = useNavigate();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<ApiCar[]>([]);
 
   useEffect(() => {
-    const loadVehicles = () => {
-      const stored: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-      setVehicles(stored.filter(v => !v.removido));
+    const loadVehicles = async () => {
+      try {
+        const cars = await api.getCars();
+        setVehicles(cars);
+      } catch (error) {
+        console.error("Erro ao carregar veículos:", error);
+      }
     };
 
     loadVehicles();
-    window.addEventListener("storage", loadVehicles);
-    return () => window.removeEventListener("storage", loadVehicles);
+    const interval = setInterval(loadVehicles, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -69,21 +63,21 @@ const Vagas = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <h3 className="font-semibold text-lg mb-2 text-primary">
-                            {vehicle.marca} {vehicle.modelo}
+                            {vehicle.model}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium">Placa:</span> {vehicle.placa}
+                            <span className="font-medium">Placa:</span> {vehicle.plate}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium">Entrada:</span> {vehicle.dataEntrada}
+                            <span className="font-medium">Entrada:</span> {new Date(vehicle.createdAt).toLocaleString("pt-BR")}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm">
-                            <span className="font-medium">Motorista:</span> {vehicle.motorista}
+                            <span className="font-medium">Motorista:</span> {vehicle.name}
                           </p>
                           <p className="text-sm">
-                            <span className="font-medium">Telefone:</span> {vehicle.telefone}
+                            <span className="font-medium">Telefone:</span> {vehicle.contact}
                           </p>
                         </div>
                       </div>
