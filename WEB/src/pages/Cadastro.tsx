@@ -33,7 +33,13 @@ const Cadastro = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.modelo || !formData.marca || !formData.placa || !formData.motorista || !formData.telefone) {
+    if (
+      !formData.modelo ||
+      !formData.marca ||
+      !formData.placa ||
+      !formData.motorista ||
+      !formData.telefone
+    ) {
       toast.error("Por favor, preencha todos os campos");
       return;
     }
@@ -70,11 +76,7 @@ const Cadastro = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/30 p-4">
       <div className="container mx-auto max-w-6xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/")}
-          className="mb-6"
-        >
+        <Button variant="ghost" onClick={() => navigate("/")} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar
         </Button>
@@ -82,7 +84,9 @@ const Cadastro = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="animate-slide-in">
             <CardHeader>
-              <CardTitle className="text-2xl">Cadastro de Veículo e Motorista</CardTitle>
+              <CardTitle className="text-2xl">
+                Cadastro de Veículo e Motorista
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,7 +97,9 @@ const Cadastro = () => {
                     <Input
                       id="modelo"
                       value={formData.modelo}
-                      onChange={(e) => setFormData({ ...formData, modelo: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, modelo: e.target.value })
+                      }
                       placeholder="Ex: Civic"
                     />
                   </div>
@@ -102,7 +108,9 @@ const Cadastro = () => {
                     <Input
                       id="marca"
                       value={formData.marca}
-                      onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marca: e.target.value })
+                      }
                       placeholder="Ex: Honda"
                     />
                   </div>
@@ -111,7 +119,12 @@ const Cadastro = () => {
                     <Input
                       id="placa"
                       value={formData.placa}
-                      onChange={(e) => setFormData({ ...formData, placa: e.target.value.toUpperCase() })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          placa: e.target.value.toUpperCase(),
+                        })
+                      }
                       placeholder="Ex: ABC1234"
                       maxLength={7}
                     />
@@ -125,7 +138,9 @@ const Cadastro = () => {
                     <Input
                       id="motorista"
                       value={formData.motorista}
-                      onChange={(e) => setFormData({ ...formData, motorista: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, motorista: e.target.value })
+                      }
                       placeholder="Ex: João Silva"
                     />
                   </div>
@@ -135,7 +150,9 @@ const Cadastro = () => {
                       id="telefone"
                       type="tel"
                       value={formData.telefone}
-                      onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, telefone: e.target.value })
+                      }
                       placeholder="Ex: (11) 99999-9999"
                     />
                   </div>
@@ -149,42 +166,45 @@ const Cadastro = () => {
           </Card>
 
           <div className="flex items-center justify-center">
-            <Card className="w-full animate-slide-in" style={{ animationDelay: "100ms" }}>
+            <Card
+              className="w-full animate-slide-in"
+              style={{ animationDelay: "100ms" }}
+            >
               <CardContent className="p-8">
                 <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
                   <div className="relative w-64 h-64 flex items-center justify-center">
                     {/* Base da catraca */}
                     <div className="absolute bottom-0 w-20 h-32 bg-gradient-to-b from-muted-foreground to-foreground rounded-lg shadow-xl" />
-                    
+
                     {/* Topo da catraca */}
                     <div className="absolute top-0 w-20 h-12 bg-gradient-to-b from-muted-foreground to-foreground rounded-t-lg shadow-xl" />
-                    
+
                     {/* Barreira/Braço da catraca */}
-                    <div 
+                    <div
                       className={`absolute w-2 bg-gradient-to-r from-destructive to-orange-500 rounded-full shadow-2xl origin-bottom transition-all duration-1000 ease-in-out ${
-                        showAnimation 
-                          ? "h-32 rotate-90 translate-x-16 opacity-80" 
+                        showAnimation
+                          ? "h-32 rotate-90 translate-x-16 opacity-80"
                           : "h-40 rotate-0 translate-x-0"
                       }`}
                       style={{
-                        top: '12px',
-                        left: '50%',
-                        transform: showAnimation 
-                          ? 'translateX(-50%) translateX(64px) rotate(90deg)' 
-                          : 'translateX(-50%) rotate(0deg)'
+                        top: "12px",
+                        left: "50%",
+                        transform: showAnimation
+                          ? "translateX(-50%) translateX(64px) rotate(90deg)"
+                          : "translateX(-50%) rotate(0deg)",
                       }}
                     />
-                    
+
                     {/* Luz indicadora */}
-                    <div 
+                    <div
                       className={`absolute top-2 w-4 h-4 rounded-full transition-all duration-500 ${
-                        showAnimation 
-                          ? "bg-success shadow-[0_0_20px_rgba(34,197,94,0.8)]" 
+                        showAnimation
+                          ? "bg-success shadow-[0_0_20px_rgba(34,197,94,0.8)]"
                           : "bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.5)]"
                       }`}
                     />
                   </div>
-                  
+
                   {showAnimation && (
                     <p className="mt-6 text-success font-semibold text-lg animate-fade-in">
                       ✓ Acesso Liberado!

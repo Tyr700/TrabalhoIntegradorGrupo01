@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
-import { Car, History, XCircle, MapPin, UserPlus } from "lucide-react";
+import {
+  Car,
+  History,
+  XCircle,
+  MapPin,
+  UserPlus,
+  PhoneCall,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
@@ -38,6 +45,13 @@ const Dashboard = () => {
       icon: MapPin,
       path: "/maquete",
       color: "from-indigo-500 to-indigo-600",
+    },
+    {
+      title: "Suporte ao Usuário",
+      description: "Entre em contato se tiver alguma dúvida ou problema",
+      icon: PhoneCall,
+      path: "/suporte",
+      color: "from-red-500 to-indigo-600",
     },
   ];
 
