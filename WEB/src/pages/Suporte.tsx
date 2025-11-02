@@ -138,6 +138,33 @@ const Suporte = () => {
                 Enviar Mensagem
               </Button>
             </form>
+
+            <div className="mt-8 pt-6 border-t">
+              <p className="text-center text-sm text-muted-foreground mb-4">
+                Ou se preferir meios de contato mais diretos:
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a
+                  href="tel:13 9400028922"
+                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                >
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <MessageSquare className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium">13 9400028922</span>
+                </a>
+                <div className="hidden sm:block h-6 w-px bg-border"></div>
+                <a
+                  href="mailto:suporteeletro@gmail.com"
+                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                >
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Mail className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium">suporteeletro@gmail.com</span>
+                </a>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
