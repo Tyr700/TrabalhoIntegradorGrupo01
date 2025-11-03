@@ -1,4 +1,5 @@
-//Grupo 01
+//Grupo do joao
+
 
 #include <Servo.h>
 
@@ -6,26 +7,26 @@
 Servo servoEntrada;
 Servo servoSaida;
 
-const int pinoServoEntrada = 8;
-const int pinoServoSaida = 9;
+const int pinoServoEntrada = 5;
+const int pinoServoSaida = 6;
 
 // === SENSORES ÓPTICOS (TCRT5000) ===
 // Sensores das cancelas
-const int sensorEntrada = A1;
-const int sensorSaida = A2;
+const int sensorEntrada = A3;
+const int sensorSaida = A4;
 
 // Sensores das vagas
-const int sensorVaga1 = A5;
-const int sensorVaga2 = A4;
-const int sensorVaga3 = A3;
+const int sensorVaga1 = A0;
+const int sensorVaga2 = A1;
+const int sensorVaga3 = A2;
 
 // === LEDs DAS VAGAS ===
-const int ledVerde1 = 6;
-const int ledVermelho1 = 7;
-const int ledVerde2 = 4;
-const int ledVermelho2 = 5;
-const int ledVerde3 = 2;
-const int ledVermelho3 = 3;
+const int ledVerde1 = 13;
+const int ledVermelho1 = 10;
+const int ledVerde2 = 12;
+const int ledVermelho2 = 9;
+const int ledVerde3 = 11;
+const int ledVermelho3 = 8;
 
 // === VARIÁVEIS DE ESTADO ===
 bool entradaAberta = false;
@@ -126,7 +127,7 @@ void fecharCancela(Servo &servo, int &posicaoAtual) {
 
 // === CONTROLE DA CANCELA DE ENTRADA COM VERIFICAÇÃO DE VAGAS ===
 void controlaCancelaEntrada(int vagasLivres) {
-  int leitura = analogRead(sensorEntrada);
+  int leitura = digitalRead(sensorEntrada);
 
   if (leitura < limiteSensor && !entradaAberta) {
     if (vagasLivres > 0) {
