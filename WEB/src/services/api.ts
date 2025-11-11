@@ -1,4 +1,4 @@
-const API_URL = "https://grupo01projeto.escolatecnicaadelia.info/api";
+const API_URL = "https://grupo01projeto20252.escolatecnicaadelia.info/api";
 
 export interface Car {
   id: string;

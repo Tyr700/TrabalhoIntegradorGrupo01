@@ -4,7 +4,7 @@ import { CarController } from "./controller/CarController";
 
 export const app = express();
 app.use(cors({
-  origin: 'https://grupo01projeto.escolatecnicaadelia.info/api',
+  origin: 'https://grupo01projeto20252.escolatecnicaadelia.info/api',
   credentials: true
 }));
 const PORTA = 3001;
