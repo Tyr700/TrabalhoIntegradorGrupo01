@@ -7,7 +7,7 @@ app.use(cors({
   origin: 'http://localhost:8080',
   credentials: true
 }));
-const PORTA = 3000;
+const PORTA = 3001;
 
 app.use(express.json());
 
