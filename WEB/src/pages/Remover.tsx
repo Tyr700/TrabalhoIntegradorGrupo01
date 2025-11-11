@@ -6,75 +6,72 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, XCircle } from "lucide-react";
 import { toast } from "sonner";
-
-interface Vehicle {
-  id: string;
-  modelo: string;
-  marca: string;
-  placa: string;
-  motorista: string;
-  telefone: string;
-  dataEntrada: string;
-  dataSaida?: string;
-  removido: boolean;
-}
+import { api, Car } from "@/services/api";
 
 const Remover = () => {
   const navigate = useNavigate();
   const [placa, setPlaca] = useState("");
-  const [vehicleInfo, setVehicleInfo] = useState<Vehicle | null>(null);
+  const [vehicleInfo, setVehicleInfo] = useState<Car | null>(null);
   const [parkingFee, setParkingFee] = useState<number>(0);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!placa) {
       toast.error("Digite uma placa");
       return;
     }
 
-    const vehicles: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-    const vehicle = vehicles.find(
-      v => v.placa.toUpperCase() === placa.toUpperCase() && !v.removido
-    );
+    try {
+      const vehicles = await api.getCars();
+      const vehicle = vehicles.find(
+        v => v.plate.toUpperCase() === placa.toUpperCase()
+      );
 
-    if (vehicle) {
-      setVehicleInfo(vehicle);
-      
-      // Calculate parking fee
-      const entryDate = new Date(vehicle.dataEntrada.split(", ")[0].split("/").reverse().join("-") + " " + vehicle.dataEntrada.split(", ")[1]);
-      const now = new Date();
-      const diffMs = now.getTime() - entryDate.getTime();
-      const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
-      
-      let fee = 10; // First hour
-      if (diffHours > 1) {
-        fee += (diffHours - 1) * 2; // Additional hours
+      if (vehicle) {
+        setVehicleInfo(vehicle);
+
+        const entryDate = new Date(vehicle.createdAt);
+        const now = new Date();
+        const diffMs = now.getTime() - entryDate.getTime();
+        const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+
+        let fee = 10;
+        if (diffHours > 1) {
+          fee += (diffHours - 1) * 2;
+        }
+
+        setParkingFee(fee);
+      } else {
+        toast.error("Veículo não encontrado");
+        setVehicleInfo(null);
+        setParkingFee(0);
       }
-      
-      setParkingFee(fee);
-    } else {
-      toast.error("Veículo não encontrado ou já foi removido");
-      setVehicleInfo(null);
-      setParkingFee(0);
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao buscar veículo");
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     if (!vehicleInfo) return;
 
-    const vehicles: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-    const updatedVehicles = vehicles.map(v =>
-      v.id === vehicleInfo.id
-        ? { ...v, removido: true, dataSaida: new Date().toLocaleString("pt-BR") }
-        : v
-    );
+    try {
+      const result = await api.removeCar(vehicleInfo.plate);
 
-    localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-    toast.success(`Veículo removido com sucesso! Valor a pagar: R$ ${parkingFee.toFixed(2)}`);
-    
-    setPlaca("");
-    setVehicleInfo(null);
-    setParkingFee(0);
-    window.dispatchEvent(new Event("storage"));
+      toast.success(`Veículo removido com sucesso! Valor a pagar: R$ ${result.value.toFixed(2)}`);
+
+      await api.openExitBarrier();
+      toast.success("Cancela de saída aberta!");
+
+      setTimeout(async () => {
+        await api.closeExitBarrier();
+        toast.info("Cancela de saída fechada");
+      }, 5000);
+
+      setPlaca("");
+      setVehicleInfo(null);
+      setParkingFee(0);
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao remover veículo");
+    }
   };
 
   return (
@@ -122,21 +119,21 @@ const Remover = () => {
                     <div>
                       <p className="text-sm">
                         <span className="font-medium">Veículo:</span>{" "}
-                        {vehicleInfo.marca} {vehicleInfo.modelo}
+                        {vehicleInfo.model}
                       </p>
                       <p className="text-sm">
-                        <span className="font-medium">Placa:</span> {vehicleInfo.placa}
+                        <span className="font-medium">Placa:</span> {vehicleInfo.plate}
                       </p>
                       <p className="text-sm">
-                        <span className="font-medium">Entrada:</span> {vehicleInfo.dataEntrada}
+                        <span className="font-medium">Entrada:</span> {new Date(vehicleInfo.createdAt).toLocaleString("pt-BR")}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm">
-                        <span className="font-medium">Motorista:</span> {vehicleInfo.motorista}
+                        <span className="font-medium">Motorista:</span> {vehicleInfo.name}
                       </p>
                       <p className="text-sm">
-                        <span className="font-medium">Telefone:</span> {vehicleInfo.telefone}
+                        <span className="font-medium">Telefone:</span> {vehicleInfo.contact}
                       </p>
                     </div>
                   </div>

@@ -3,32 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, History } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  modelo: string;
-  marca: string;
-  placa: string;
-  motorista: string;
-  telefone: string;
-  dataEntrada: string;
-  dataSaida?: string;
-  removido: boolean;
-}
+import { api, Car } from "@/services/api";
 
 const Historico = () => {
   const navigate = useNavigate();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<Car[]>([]);
 
   useEffect(() => {
-    const loadVehicles = () => {
-      const stored: Vehicle[] = JSON.parse(localStorage.getItem("vehicles") || "[]");
-      setVehicles(stored.filter(v => v.removido));
+    const loadVehicles = async () => {
+      try {
+        const history = await api.getHistory();
+        setVehicles(history);
+      } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+      }
     };
 
     loadVehicles();
-    window.addEventListener("storage", loadVehicles);
-    return () => window.removeEventListener("storage", loadVehicles);
+    const interval = setInterval(loadVehicles, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -70,26 +63,29 @@ const Historico = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <h3 className="font-semibold text-lg mb-2">
-                            {vehicle.marca} {vehicle.modelo}
+                            {vehicle.model}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium">Placa:</span> {vehicle.placa}
+                            <span className="font-medium">Placa:</span> {vehicle.plate}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium">Entrada:</span> {vehicle.dataEntrada}
+                            <span className="font-medium">Entrada:</span> {new Date(vehicle.createdAt).toLocaleString("pt-BR")}
                           </p>
-                          {vehicle.dataSaida && (
+                          {vehicle.departureTime && (
                             <p className="text-sm text-muted-foreground">
-                              <span className="font-medium">Saída:</span> {vehicle.dataSaida}
+                              <span className="font-medium">Saída:</span> {new Date(vehicle.departureTime).toLocaleString("pt-BR")}
                             </p>
                           )}
+                          <p className="text-sm text-success font-medium">
+                            <span className="font-medium">Valor Pago:</span> R$ {vehicle.price.toFixed(2)}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm">
-                            <span className="font-medium">Motorista:</span> {vehicle.motorista}
+                            <span className="font-medium">Motorista:</span> {vehicle.name}
                           </p>
                           <p className="text-sm">
-                            <span className="font-medium">Telefone:</span> {vehicle.telefone}
+                            <span className="font-medium">Telefone:</span> {vehicle.contact}
                           </p>
                         </div>
                       </div>

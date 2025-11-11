@@ -143,4 +143,13 @@ export function CarController() {
       res.status(500).json({ error: error.message });
     }
   });
+
+  app.get("/vagas", (req, res) => {
+    try {
+      const spots = carService.getSpots();
+      res.status(200).json(spots);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 }

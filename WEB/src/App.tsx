@@ -10,6 +10,7 @@ import Historico from "./pages/Historico";
 import Remover from "./pages/Remover";
 import Maquete from "./pages/Maquete";
 import NotFound from "./pages/NotFound";
+import Suporte from "./pages/Suporte";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/historico" element={<Historico />} />
           <Route path="/remover" element={<Remover />} />
           <Route path="/maquete" element={<Maquete />} />
+          <Route path="/suporte" element={<Suporte />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

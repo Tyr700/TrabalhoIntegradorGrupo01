@@ -1,8 +1,19 @@
 import { Car } from "../model/Car";
 
+interface ParkingSpot {
+  id: number;
+  occupied: boolean;
+  carId?: string;
+}
+
 export class CarService {
   private listaC: Car[] = [];
   private HistC: Car[] = [];
+  private spots: ParkingSpot[] = [
+    { id: 1, occupied: false },
+    { id: 2, occupied: false },
+    { id: 3, occupied: false }
+  ];
 
   constructor() {}
 
@@ -61,9 +72,36 @@ export class CarService {
     car.setPrice(this.Calculate(car.getcreatedAt(), car.getDepartureTime()));
     const value = car.getPrice();
 
-    // Remover do array
+    const spot = this.spots.find(s => s.carId === car.getId());
+    if (spot) {
+      spot.occupied = false;
+      spot.carId = undefined;
+    }
+
     this.HistC.push(car);
     this.listaC.splice(index, 1);
     return value;
+  }
+
+  public updateSpotStatus(spotId: number, occupied: boolean, carId?: string) {
+    const spot = this.spots.find(s => s.id === spotId);
+    if (spot) {
+      spot.occupied = occupied;
+      spot.carId = carId;
+    }
+  }
+
+  public getSpots() {
+    return this.spots;
+  }
+
+  public assignCarToSpot(carId: string): number | null {
+    const freeSpot = this.spots.find(s => !s.occupied);
+    if (freeSpot) {
+      freeSpot.occupied = true;
+      freeSpot.carId = carId;
+      return freeSpot.id;
+    }
+    return null;
   }
 }
