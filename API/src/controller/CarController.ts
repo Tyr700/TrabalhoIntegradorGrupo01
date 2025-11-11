@@ -7,7 +7,7 @@ export function CarController() {
   const carService = new CarService();
   let arduinoService: ArduinoService | null = null;
 
-  app.post("/cadastro", (req, res) => {
+  app.post("/api/cadastro", (req, res) => {
     try {
       const { model, plate, name, contact } = req.body;
 
@@ -30,7 +30,7 @@ export function CarController() {
     }
   });
 
-  app.get("/verCarro", (req, res) => {
+  app.get("/api/verCarro", (req, res) => {
     try {
       const Cars = carService.getCar();
       res.status(200).json(Cars);
@@ -39,7 +39,7 @@ export function CarController() {
     }
   });
 
-  app.get("/verCarroHistorico", (req, res) => {
+  app.get("/api/verCarroHistorico", (req, res) => {
     try {
       const Cars = carService.getHist();
       res.status(200).json(Cars);
@@ -48,7 +48,7 @@ export function CarController() {
     }
   });
 
-  app.delete("/remover", (req, res) => {
+  app.delete("/api/remover", (req, res) => {
     try {
       // Opção 1: Usar placa do corpo da requisição
       const { plate } = req.body;
@@ -73,7 +73,7 @@ export function CarController() {
   });
 
   // Opção 2: Rota alternativa usando parâmetro de rota (mais RESTful)
-  app.delete("/remover/:plate", (req, res) => {
+  app.delete("/api/remover/:plate", (req, res) => {
     try {
       const { plate } = req.params;
 
@@ -93,7 +93,7 @@ export function CarController() {
   });
 
   // Rotas do Arduino
-  app.post("/arduino/conectar", async (req, res) => {
+  app.post("/api/arduino/conectar", async (req, res) => {
     try {
       const { porta } = req.body;
       arduinoService = new ArduinoService(carService, porta || "COM3");
@@ -107,7 +107,7 @@ export function CarController() {
     }
   });
 
-  app.post("/arduino/abrir-cancela", async (req, res) => {
+  app.post("/api/arduino/abrir-cancela", async (req, res) => {
     try {
       if (!arduinoService) {
         return res.status(400).json({ error: "Arduino não conectado" });
@@ -119,7 +119,7 @@ export function CarController() {
     }
   });
 
-  app.post("/arduino/fechar-cancela", async (req, res) => {
+  app.post("/api/arduino/fechar-cancela", async (req, res) => {
     try {
       if (!arduinoService) {
         return res.status(400).json({ error: "Arduino não conectado" });
@@ -131,7 +131,7 @@ export function CarController() {
     }
   });
 
-  app.post("/arduino/desconectar", (req, res) => {
+  app.post("/api/arduino/desconectar", (req, res) => {
     try {
       if (!arduinoService) {
         return res.status(400).json({ error: "Arduino não conectado" });
@@ -144,7 +144,7 @@ export function CarController() {
     }
   });
 
-  app.get("/vagas", (req, res) => {
+  app.get("/api/vagas", (req, res) => {
     try {
       const spots = carService.getSpots();
       res.status(200).json(spots);
